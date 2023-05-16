@@ -1,11 +1,17 @@
+import pytest
 import requests
 
 
 class TestFirstApi:
+    names = [
+        ("Elena"),
+        ("Maksim"),
+        ("")
+    ]
 
-    def test_say_hello_by_name_you_specify(self):
+    @pytest.mark.parametrize('name', names)
+    def test_say_hello_by_name_you_specify(self, name):
         url = "https://playground.learnqa.ru/api/hello"
-        name = "Elena"
         payload = {"name": name}
 
         response = requests.get(url, params=payload)
@@ -17,7 +23,12 @@ class TestFirstApi:
         assert "answer" in response_dict, \
             "There is no 'answer' field in the response"
 
-        expected_response_text = f"Hello, {name}"
+        if len(name) ==0:
+            expected_response_text = "Hello, someone"
+        else:
+            expected_response_text = f"Hello, {name}"
+
         actual_response_text = response_dict["answer"]
+
         assert actual_response_text == expected_response_text, \
             "Actual text in the response is not correct"
